@@ -1,0 +1,29 @@
+﻿<Window x:Class="HotelManagerSimulator.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HotelManagerSimulator"
+        mc:Ignorable="d"
+        Title="HelpWindow" Height="265.963" Width="450.923">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.6*"/>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock Text="Краткое руководство" Margin="145,10,130,10"/>
+        <TextBlock Grid.Row="1" HorizontalAlignment="Left" Margin="10,10,0,10" 
+                 TextWrapping="Wrap" Text="1. Для того, чтобы поселять гостей в их номера, вам нужно перетащить человечков с поля в нужный им номер" Width="423"/>
+        <TextBlock Grid.Row="2" HorizontalAlignment="Left" Margin="10,10,0,0" 
+            TextWrapping="Wrap" Text="2. Для того, чтобы выселить гостей из их номера, вам нужно нажать на номер ЛКМ, а на предлогаемый выбор - ПКМ" Width="423" Height="38" VerticalAlignment="Top"/>
+        <TextBlock Grid.Row="3" HorizontalAlignment="Left" Margin="10,9,0,10.75" 
+            TextWrapping="Wrap" Text="3. Чтобы узнать некоторую информацию о номере, вам нужно навестить на дверь курсором мыши и подождать немного" Width="423"/>
+    </Grid>
+</Window>

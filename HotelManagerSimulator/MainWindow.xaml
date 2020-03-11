@@ -1,0 +1,120 @@
+﻿<Window x:Class="HotelManagerSimulator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HotelManagerSimulator"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="740" Width="1850" ResizeMode="NoResize">
+    <Window.Resources>
+        <Style TargetType="ComboBoxItem">
+            <EventSetter Event="Selected" Handler="SelectItem"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Width" Value="60"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Margin" Value="0 10 0 0" />
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Margin" Value="70 30 60 0"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="Height" Value="79" />
+            <Setter Property="Width" Value="45" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+        <Style TargetType="ListBoxItem">
+            <Style.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="ListBoxItem.IsSelected" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <MultiTrigger.Setters>
+                        <Setter Property="ListBoxItem.FontSize" Value="14" />
+                        <Setter Property="ListBoxItem.FontWeight" Value="Bold" />
+                        <Setter Property="ListBoxItem.FontStyle" Value="Italic" />
+                    </MultiTrigger.Setters>
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+        <DataTemplate x:Key="ListBoxTemlate">
+            <StackPanel Margin="30 0 0 0" Height="75" Width="160" Opacity="100">
+                <TextBlock Margin="1">
+                    <TextBlock Text="Номер: " FontSize="12" FontWeight="Normal"/>
+                    <TextBlock Text="{Binding Path=Number}" FontStyle="Normal"/>
+                </TextBlock>
+                <TextBlock  Margin="1">
+                    <TextBlock Text="Тип комнаты: " FontSize="12" FontWeight="Normal"/>
+                    <TextBlock Text="{Binding Path=RoomType}" FontStyle="Normal"/>
+                </TextBlock>
+                <TextBlock  Margin="1">
+                    <TextBlock Text="Стоимость: " FontSize="12" FontWeight="Normal"/>
+                    <TextBlock Text="{Binding Path=Cost}" FontStyle="Normal"/>
+                </TextBlock>
+            </StackPanel>
+        </DataTemplate>
+        <ItemsPanelTemplate x:Key="ItemsTemplate">
+            <WrapPanel Margin="10 0 0 0" Opacity="100"/>
+        </ItemsPanelTemplate>
+    </Window.Resources>
+    <Grid x:Name="MainField">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="1.9*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Image x:Name="BackgroundImage" Grid.RowSpan="5" Stretch="UniformToFill"/>
+        <StackPanel>
+            <WrapPanel Margin="10,10,10,0">
+                <TextBlock Text="Количество поселённых людей: "/>
+                <TextBlock x:Name="SettlePeopleBlock" Text="{Binding Path=SettledPeopleCount}" Height="18" Margin="-115 18 0 0"/>
+            </WrapPanel>
+            <WrapPanel Margin="10,10,0,0">
+                <TextBlock Text="Количество очков: " Margin="0 -1 0 0"/>
+                <TextBlock x:Name="ScoreBlock" Text="{Binding Path=Score}" Height="18"/>
+            </WrapPanel>
+        </StackPanel>
+        <TextBlock Grid.Row="1" Text="Помощь по игре (нажми)" Margin="10,10,10,77" Mouse.MouseUp="HelpClick"
+                   FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
+        <!--<TextBlock Grid.Row="2" x:Name="DebugTextBlock"/>-->
+        
+        <ListBox x:Name="ListRoom" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Column="6" Grid.RowSpan="4" Mouse.MouseUp="BorderAnimation"
+                 ItemTemplate="{StaticResource ResourceKey=ListBoxTemlate}" ItemsPanel="{StaticResource ResourceKey=ItemsTemplate}"/>
+        <WrapPanel Grid.Column="6" Grid.Row="4">
+            <TextBlock Text="Фильтрация по таким критериям:" Margin="107 0 100 0"/>
+            <CheckBox x:Name="TypeCheckBox" Content="Тип комнаты" Click="SetFilterConditionClick"/>
+            <CheckBox x:Name="PriceCheckBox" Content="Цена"  Click="SetFilterConditionClick"/>
+            
+            <ComboBox x:Name="RoomTypeComboBox" Width="135" Height="27" Margin="45 10 0 0" Padding="5" FontSize="12" >
+                <ComboBoxItem Content="Economy" IsSelected="True"/>
+                <ComboBoxItem Content="Standart"/>
+                <ComboBoxItem Content="Superior"/>
+                <ComboBoxItem Content="Deluxe"/>
+                <ComboBoxItem Content="Junior Suite"/>
+                <ComboBoxItem Content="Luxe"/>
+            </ComboBox>
+            
+            <TextBlock Text="От" Margin="45 10 10 0" Height="20"/>
+            <TextBox x:Name="MinPriceTextBox" Text="0" TextChanged="TextChanged"/>
+            <TextBlock Text="До" Height="20" Margin="10 10 10 0"/>
+            <TextBox x:Name="MaxPriceTextBox" Text="0" TextChanged="TextChanged"/>
+        </WrapPanel>
+    </Grid>
+</Window>
