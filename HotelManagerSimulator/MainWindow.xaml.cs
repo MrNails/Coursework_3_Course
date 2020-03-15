@@ -237,7 +237,7 @@ namespace HotelManagerSimulator
                             SetMoveAnimation((Canvas)canvChild, MoveDirection.Left, (o, arg) =>
                             {
                                 ((Canvas)child).Children.Remove((Canvas)canvChild);
-                                Game.FamilyWaitingTime = 15;
+                                Game.FamilyWaitingTime = 25;
                                 Game.Manager.Score -= score;
                                 Game.CurrentSpawnPeopleCount--;
                                 Game.SpawnPeople();
@@ -281,7 +281,7 @@ namespace HotelManagerSimulator
 
                 if (Game.Manager.RecieveGuest(room, family) == true)
                 {
-                    Game.FamilyWaitingTime = 15;
+                    Game.FamilyWaitingTime = 25;
                     ChangePicture(room.Number);
                     DeletePeople();
                 }
@@ -687,9 +687,10 @@ namespace HotelManagerSimulator
 
                             SetMoveAnimation((Canvas)((ToolTip)button.ToolTip).Content, MoveDirection.Left, (obj, arg) =>
                             {
-                                Game.FamilyWaitingTime = 15;
+                                Game.FamilyWaitingTime = 25;
                                 ((ToolTip)button.ToolTip).Content = null;
                                 DeletePeople();
+                                Game.RefusePeople();
                             });
                         }
                     }

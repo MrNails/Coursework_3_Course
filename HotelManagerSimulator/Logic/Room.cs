@@ -81,7 +81,7 @@ namespace HotelManagerSimulator.Logic
         {
             string text= "";
             text += "Тип комнаты: " + RoomType.ToString() + "\n";
-            text += "Максимальное количество жильцов: " + MaxPeopleCount.ToString() + "\n";
+            //text += "Максимальное количество жильцов: " + MaxPeopleCount.ToString() + "\n";
             text += "Текущее количество жильцов: " + Guests?.MembersCount.ToString() + "\n";
             if (EndSettleGuest <= DateTime.Now)
             {

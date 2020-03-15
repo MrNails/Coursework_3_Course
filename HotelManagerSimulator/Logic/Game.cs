@@ -17,6 +17,8 @@ namespace HotelManagerSimulator.Logic
         public static byte MaxSpawnPeopleCount { get; set; }
         public static byte CurrentSpawnPeopleCount { get; set; }
         public static byte FamilyWaitingTime { get; set; }
+        public static int MaxRefusedPeople { get; set; }
+        public static int RefusedPeopleCount { get; set; }
 
         static Game() {
             Manager = null;
@@ -27,7 +29,8 @@ namespace HotelManagerSimulator.Logic
 
         public static void Start(EventHandler spawnFunc, EventHandler checkSettle)
         {
-
+            MaxRefusedPeople = 5;
+            RefusedPeopleCount = 0;
             MaxSpawnPeopleCount = 1;
             CurrentSpawnPeopleCount = 0;
 
@@ -166,6 +169,15 @@ namespace HotelManagerSimulator.Logic
         {
             SpawnPeople();
             SettleTimer.Start();
+        }
+
+        public static void RefusePeople()
+        {
+            if(MaxRefusedPeople < ++RefusedPeopleCount)
+            {
+                Manager.Score--;
+                RefusedPeopleCount = 0;
+            }
         }
     }
 }
