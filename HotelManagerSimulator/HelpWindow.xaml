@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelManagerSimulator"
         mc:Ignorable="d"
-        Title="HelpWindow" Height="265.963" Width="450.923">
+        Title="HelpWindow" Height="313.296" Width="450.923">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="15"/>
@@ -17,6 +17,7 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock Text="Краткое руководство" Margin="145,10,130,10"/>
         <TextBlock Grid.Row="1" HorizontalAlignment="Left" Margin="10,10,0,10" 
@@ -25,5 +26,7 @@
             TextWrapping="Wrap" Text="2. Для того, чтобы выселить гостей из их номера, вам нужно нажать на номер ЛКМ, а на предлогаемый выбор - ПКМ" Width="423" Height="38" VerticalAlignment="Top"/>
         <TextBlock Grid.Row="3" HorizontalAlignment="Left" Margin="10,9,0,10.75" 
             TextWrapping="Wrap" Text="3. Чтобы узнать некоторую информацию о номере, вам нужно навестить на дверь курсором мыши и подождать немного" Width="423"/>
+        <TextBlock Grid.Row="4" HorizontalAlignment="Left" Margin="10,9,0,10.75" 
+            TextWrapping="Wrap" Text="4. Чтобы выйти включить паузу - нажмите esc" Width="423"/>
     </Grid>
 </Window>

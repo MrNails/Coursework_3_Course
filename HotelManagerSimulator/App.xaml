@@ -4,6 +4,22 @@
              xmlns:local="clr-namespace:HotelManagerSimulator"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style x:Key="MenuTextBlock">
+            <Style.Setters>
+                <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
+                <Setter Property="TextBlock.HorizontalAlignment" Value="Center"/>
+                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                <Setter Property="TextBlock.FontSize" Value="40"/>
+                <Setter Property="TextBlock.FontStyle" Value="Italic"/>
+                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+            </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="TextBlock.IsMouseOver" Value="True">
+                    <Setter Property="TextBlock.FontWeight" Value="Black"/>
+                    <Setter Property="TextBlock.FontStretch" Value="UltraExpanded"/>
+                    <Setter Property="TextBlock.TextDecorations" Value="Underline"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Application.Resources>
 </Application>

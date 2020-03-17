@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -36,15 +37,24 @@ namespace HotelManagerSimulator
             Left = 1,
             Right
         }
+
         private bool isRefused;
+        public static RoutedCommand MyCommand = new RoutedCommand();
+
 
         public MainWindow()
         {
+            MyCommand.InputGestures.Add(new KeyGesture(Key.Escape));
+            InitializeComponent();
+            isRefused = false;
+            Tab1Image.Source = new ImageBrush(new BitmapImage(new Uri(System.IO.Path.GetFullPath(@".\Resource\Image\Background_field.jfif")))).ImageSource;
+            Tab2Image.Source = Tab1Image.Source;
+        }
+
+        private void GameInit()
+        {
             try
             {
-
-                isRefused = false;
-                InitializeComponent();
 
                 Game.Start(SpawnFamily, CheckEndSettle);
 
@@ -58,7 +68,8 @@ namespace HotelManagerSimulator
                 ListRoom.ItemsSource = Game.Manager.GetFreeRoom(Game.Floors);
 
                 BackgroundImage.Source = new ImageBrush(new BitmapImage(new Uri(System.IO.Path.GetFullPath(@".\Resource\Image\Background_field.jfif")))).ImageSource;
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show($"Message:\n\t{ex.Message}\nStackTrace:\n\t{ex.StackTrace}");
             }
@@ -67,29 +78,18 @@ namespace HotelManagerSimulator
         private void GameOver()
         {
             Game.StopGame();
-            if(MessageBox.Show("Вы проиграли\nНачать заново или выйти?", "Проигрыш", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.No)
-            {
-                this.Close();
-            }
 
             Game.Manager.SettledPeopleCount = 0;
             Game.Manager.Score = 0;
             Game.Peoples.Clear();
             Game.Floors.Clear();
-            Game.Start(SpawnFamily, CheckEndSettle);
+
+            CloseAllTip();
 
             for (int i = 0; i < MainField.Children.Count; i++)
             {
-                if(MainField.Children[i] is Canvas)
+                if (MainField.Children[i] is Canvas)
                 {
-                    foreach (var item in ((Canvas)MainField.Children[i]).Children)
-                    {
-                        if(item is Border && ((Border)item).ToolTip != null)
-                        {
-                            ((ToolTip)((Border)item).ToolTip).IsOpen = false;
-                            break;
-                        }
-                    }
                     MainField.Children.RemoveAt(i);
                     i--;
                 }
@@ -100,7 +100,16 @@ namespace HotelManagerSimulator
 
             SetFilterConditionClick(null, null);
 
-            FillGrid(GameType.NewGame);
+            if (PauseTab.IsSelected || MessageBox.Show("Вы проиграли\nВыйти в главное меню?", "Проигрыш", MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes)
+            {
+                MainMenuTab.IsSelected = true;
+            }
+            else
+            {
+                MessageBox.Show("+");
+                Game.Start(SpawnFamily, CheckEndSettle);
+                FillGrid(GameType.NewGame);
+            }
         }
 
 
@@ -115,7 +124,7 @@ namespace HotelManagerSimulator
             for (int i = MainField.Children.Count - 1; i >= 0 && exit; i--)
             {
                 if (MainField.Children[i] is Canvas)
-                {  
+                {
                     Canvas mainCanv = (Canvas)MainField.Children[i];
                     mainCanv.PreviewMouseDown += MoveFamily;
 
@@ -130,7 +139,7 @@ namespace HotelManagerSimulator
                     tool.HorizontalOffset = 70;
                     tool.VerticalOffset = -35;
 
-                    
+
                     button.Margin = new Thickness(20);
                     button.Height = 100;
                     button.Width = 55;
@@ -168,14 +177,14 @@ namespace HotelManagerSimulator
 
                     exit = false;
                 }
-                    
+
             }
         }
 
         //Делает опрос всей сетки с комнатами на дату выселения
         private void CheckEndSettle(object sender, EventArgs e)
         {
-            if(Game.Manager.Score < 0)
+            if (Game.Manager.Score < 0)
             {
                 GameOver();
             }
@@ -189,15 +198,15 @@ namespace HotelManagerSimulator
 
             foreach (var child in MainField.Children)
             {
-                if(child is Canvas)
+                if (child is Canvas)
                 {
                     foreach (var canvChild in ((Canvas)child).Children)
                     {
-                        if(canvChild is Border)
+                        if (canvChild is Border)
                         {
                             border = (Border)canvChild;
                             room = (Room)((ToolTip)((Button)border.Child).ToolTip).Content;
-                            if(room.Guests != null && border.ToolTip == null && room.EndSettleGuest <= DateTime.Now)
+                            if (room.Guests != null && border.ToolTip == null && room.EndSettleGuest <= DateTime.Now)
                             {
                                 tool.Content = "Время для поселения вышло";
                                 tool.Placement = System.Windows.Controls.Primitives.PlacementMode.Relative;
@@ -210,13 +219,14 @@ namespace HotelManagerSimulator
                                 tool.IsOpen = true;
 
                                 border.ToolTip = tool;
-                            } 
+                            }
                         }
 
-                        if(canvChild is Canvas && Game.FamilyWaitingTime > 0 && Game.FamilyWaitingTime != byte.MaxValue)
+                        if (canvChild is Canvas && Game.FamilyWaitingTime > 0 && Game.FamilyWaitingTime != byte.MaxValue)
                         {
                             Game.FamilyWaitingTime--;
-                        } else if(canvChild is Canvas && Game.FamilyWaitingTime == 0)
+                        }
+                        else if (canvChild is Canvas && Game.FamilyWaitingTime == 0)
                         {
                             int score = 0;
                             Game.FamilyWaitingTime = byte.MaxValue;
@@ -251,7 +261,7 @@ namespace HotelManagerSimulator
                         }
                     }
 
-                    if(panel != null)
+                    if (panel != null)
                     {
                         ((Canvas)child).Children.Remove(panel);
                         panel = null;
@@ -264,8 +274,8 @@ namespace HotelManagerSimulator
         private void MoveFamily(object sender, MouseButtonEventArgs e)
         {
             if (sender is Button && ((Button)sender).ToolTip is ToolTip)
-            { 
-               DragDrop.DoDragDrop((Button)sender, ((ToolTip)((Button)sender).ToolTip).Content, DragDropEffects.Move);
+            {
+                DragDrop.DoDragDrop((Button)sender, ((ToolTip)((Button)sender).ToolTip).Content, DragDropEffects.Move);
             }
         }
 
@@ -430,28 +440,30 @@ namespace HotelManagerSimulator
                         }
                     }
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show($"{ex.Message}\n{ex.StackTrace}");
-                
+
             }
         }
+
 
         private void ChangePicture(int roomNumber)
         {
             foreach (var child in MainField.Children)
             {
-                if(child is Canvas)
+                if (child is Canvas)
                 {
                     Image image = null;
                     foreach (var canvChild in ((Canvas)child).Children)
                     {
-                        if(canvChild is Image)
+                        if (canvChild is Image)
                         {
                             image = (Image)canvChild;
                         }
 
-                        if(canvChild is TextBlock && Int32.Parse(((TextBlock)canvChild).Text) == roomNumber && image != null)
+                        if (canvChild is TextBlock && Int32.Parse(((TextBlock)canvChild).Text) == roomNumber && image != null)
                         {
                             SetFilterConditionClick(null, null);
                             image.Source = new ImageBrush(new BitmapImage(new Uri(System.IO.Path.GetFullPath(@".\Resource\Image\FullRoom.bmp")))).ImageSource;
@@ -466,14 +478,14 @@ namespace HotelManagerSimulator
         private void DeletePeople()
         {
             WrapPanel panel = null;
-            Canvas canvas = null; 
+            Canvas canvas = null;
             foreach (var child in MainField.Children)
             {
-                if(child is Canvas)
+                if (child is Canvas)
                 {
                     foreach (var canvChild in ((Canvas)child).Children)
                     {
-                        if(canvChild is Canvas)
+                        if (canvChild is Canvas)
                         {
                             ((Canvas)child).PreviewMouseDown -= RefuseAction;
                             ((Canvas)child).MouseRightButtonUp -= AnswerButtonClick;
@@ -482,12 +494,15 @@ namespace HotelManagerSimulator
                             {
                                 ((ToolTip)((Button)((Canvas)((Canvas)child).Children[1]).Children[1]).ToolTip).IsOpen = false;
                                 Game.CurrentSpawnPeopleCount--;
-                                Game.SpawnPeople();
+                                if (!PauseTab.IsSelected)
+                                {
+                                    Game.SpawnPeople();
+                                }
                             }
                             canvas = (Canvas)canvChild;
                         }
 
-                        if(canvChild is WrapPanel)
+                        if (canvChild is WrapPanel)
                         {
                             panel = (WrapPanel)canvChild;
                         }
@@ -556,14 +571,14 @@ namespace HotelManagerSimulator
         //Создаёт панель с кнопками, которые нужны для удаления гостей
         private void GetOutPeople(object sender, RoutedEventArgs e)
         {
-            if(sender is Canvas)
+            if (sender is Canvas)
             {
                 ToolTip tool = new ToolTip();
 
                 foreach (var child in ((Canvas)sender).Children)
                 {
 
-                    if(child is Border)
+                    if (child is Border)
                     {
                         tool.Content = (Room)((ToolTip)((Button)((Border)child).Child).ToolTip).Content;
                     }
@@ -574,7 +589,7 @@ namespace HotelManagerSimulator
                     }
                 }
 
-                if(((Room)tool.Content).Guests == null)
+                if (((Room)tool.Content).Guests == null)
                 {
                     return;
                 }
@@ -598,7 +613,7 @@ namespace HotelManagerSimulator
 
                 foreach (var child in ((Canvas)sender).Children)
                 {
-                    if(child is Canvas)
+                    if (child is Canvas)
                     {
                         tool.Content = (Canvas)child;
                     }
@@ -682,7 +697,7 @@ namespace HotelManagerSimulator
                         }
                         else if (button.Tag is int && (int)button.Tag == 2)
                         {
-                            isRefused = true; 
+                            isRefused = true;
                             Game.FamilyWaitingTime = byte.MaxValue;
 
                             SetMoveAnimation((Canvas)((ToolTip)button.ToolTip).Content, MoveDirection.Left, (obj, arg) =>
@@ -749,7 +764,8 @@ namespace HotelManagerSimulator
 
                     }
                 }
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -783,7 +799,7 @@ namespace HotelManagerSimulator
 
             if (completedAction != null)
             {
-                moveAnimation.Completed += completedAction; 
+                moveAnimation.Completed += completedAction;
             }
 
             moveAnimation.Duration = TimeSpan.FromSeconds(3);
@@ -798,7 +814,7 @@ namespace HotelManagerSimulator
                 sender = new object();
             }
 
-            if(e == null)
+            if (e == null)
             {
                 e = new RoutedEventArgs();
             }
@@ -808,7 +824,7 @@ namespace HotelManagerSimulator
             if (PriceCheckBox.IsChecked == true)
             {
                 int min, max;
-                if(!int.TryParse(MinPriceTextBox.Text, out min))
+                if (!int.TryParse(MinPriceTextBox.Text, out min))
                 {
                     PriceCheckBox.IsChecked = false;
                     return;
@@ -823,7 +839,8 @@ namespace HotelManagerSimulator
                 condition.maxValue = max;
                 condition.minValue = min;
 
-            } else if(PriceCheckBox.IsChecked == null)
+            }
+            else if (PriceCheckBox.IsChecked == null)
             {
                 PriceCheckBox.IsChecked = false;
             }
@@ -834,7 +851,8 @@ namespace HotelManagerSimulator
                 if (sender is ComboBoxItem)
                 {
                     type = (string)((ComboBoxItem)sender).Content;
-                } else
+                }
+                else
                 {
                     type = RoomTypeComboBox.Text;
                 }
@@ -872,6 +890,36 @@ namespace HotelManagerSimulator
             ListRoom.ItemsSource = Game.Manager?.GetFreeRoom(Game.Floors, condition);
         }
 
+        private void CloseAllTip()
+        {
+            for (int i = 0; i < MainField.Children.Count; i++)
+            {
+                if (MainField.Children[i] is Canvas)
+                {
+                    foreach (var item in ((Canvas)MainField.Children[i]).Children)
+                    {
+                        if (item is Border && ((Border)item).ToolTip != null)
+                        {
+                            ((ToolTip)((Border)item).ToolTip).IsOpen = false;
+                            ((Border)item).ToolTip = null;
+                            break;
+                        }
+
+                        if(item is Canvas)
+                        {
+                            foreach (var innerItem in ((Canvas)item).Children)
+                            {
+                                if(innerItem is Button)
+                                {
+                                    ((ToolTip)((Button)innerItem).ToolTip).IsOpen = false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private void SelectItem(object sender, RoutedEventArgs e)
         {
             SetFilterConditionClick(sender, e);
@@ -880,6 +928,39 @@ namespace HotelManagerSimulator
         private void TextChanged(object sender, TextChangedEventArgs e)
         {
             SetFilterConditionClick(sender, new RoutedEventArgs());
+        }
+
+
+        private void NewGameClick(object sender, MouseButtonEventArgs e)
+        {
+            GameTab.IsSelected = true;
+            GameInit();
+        }
+
+        private void ExitClick(object sender, MouseButtonEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void ResumeClick(object sender, MouseButtonEventArgs e)
+        {
+            Game.ResumeGame();
+            GameTab.IsSelected = true;
+        }
+
+        private void ExitMainMenuClick(object sender, MouseButtonEventArgs e)
+        {
+            GameOver();
+        }
+
+        private void PauseCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (GameTab.IsSelected)
+            {
+                Game.StopGame();
+                CloseAllTip();
+                PauseTab.IsSelected = true;
+            }
         }
     }
 }
