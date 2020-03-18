@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace HotelManagerSimulator.Logic
 {
+    [Serializable]
     struct FamilyRequirements
     {
         public ERoomType roomType;
@@ -36,6 +37,7 @@ namespace HotelManagerSimulator.Logic
         }
     }
 
+    [Serializable]
     class Family
     {
         
@@ -97,7 +99,7 @@ namespace HotelManagerSimulator.Logic
             string text = "";
             text += Requirements.ToString();
             text += "\n\nКоличество денег: " + Money.ToString();
-            text += "\nДата выселения: " + EndSettle.ToString();
+            text += "\nДата выселения: " + EndSettle.ToString("T");
 
             return text;
         }

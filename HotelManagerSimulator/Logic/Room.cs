@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
+
 namespace HotelManagerSimulator.Logic
 {
     enum ERoomType : byte
@@ -16,6 +17,7 @@ namespace HotelManagerSimulator.Logic
         Luxe
     }
 
+    [Serializable]
     class Room : INotifyPropertyChanged
     {
         private bool isFree;
@@ -71,6 +73,7 @@ namespace HotelManagerSimulator.Logic
             }
         }
 
+        [field: NonSerializedAttribute()]
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
@@ -88,7 +91,7 @@ namespace HotelManagerSimulator.Logic
                 text += "Дата выселения: нет";
             } else
             {
-                text += "Дата выселения: " + EndSettleGuest.ToString();
+                text += "Дата выселения: " + EndSettleGuest.ToString("T");
             }
 
             return text;

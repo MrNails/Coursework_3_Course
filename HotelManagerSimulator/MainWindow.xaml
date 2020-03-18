@@ -75,15 +75,17 @@
                             <RowDefinition Height="1.2*"/>
                             <RowDefinition/>
                             <RowDefinition/>
+                            <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <Image x:Name="Tab1Image" Grid.RowSpan="3" Stretch="Fill"/>
+                        <Image x:Name="Tab1Image" Grid.RowSpan="4" Stretch="Fill"/>
 
                         <TextBlock Text="Менеджер-симулятор роботы отеля" Width="760" FontSize="60" FontWeight="ExtraBold" 
                    VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
                    Foreground="MediumSeaGreen" FontStyle="Normal" Style="{x:Null}"/>
 
                         <TextBlock Grid.Row="1" Text="Новая игра" MouseUp="NewGameClick" Style="{StaticResource ResourceKey=MenuTextBlock}"/>
-                        <TextBlock Grid.Row="2" Text="Выход" MouseUp="ExitClick" Style="{StaticResource ResourceKey=MenuTextBlock}" />
+                        <TextBlock Grid.Row="2" Text="Загрузка" MouseUp="LoadGameClick" Style="{StaticResource ResourceKey=MenuTextBlock}"/>
+                        <TextBlock Grid.Row="3" Text="Выход" MouseUp="ExitClick" Style="{StaticResource ResourceKey=MenuTextBlock}" />
                     </Grid>
                 </TabItem.Content>
             </TabItem>
@@ -94,15 +96,17 @@
                             <RowDefinition Height="1.2*"/>
                             <RowDefinition/>
                             <RowDefinition/>
+                            <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <Image x:Name="Tab2Image" Grid.RowSpan="3" Stretch="Fill"/>
+                        <Image x:Name="Tab2Image" Grid.RowSpan="4" Stretch="Fill"/>
 
                         <TextBlock Text="Пауза" Width="360" FontSize="60" FontWeight="ExtraBold" 
                    VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
                    Foreground="MediumSeaGreen" FontStyle="Normal" Style="{x:Null}"/>
 
                         <TextBlock Grid.Row="1" Text="Продолжить" MouseUp="ResumeClick" Style="{StaticResource ResourceKey=MenuTextBlock}"/>
-                        <TextBlock Grid.Row="2" Text="Выход в главное меню" MouseUp="ExitMainMenuClick" Style="{StaticResource ResourceKey=MenuTextBlock}"/>
+                        <TextBlock Grid.Row="2" Text="Сохранить" MouseUp="SaveClick" Style="{StaticResource ResourceKey=MenuTextBlock}"/>
+                        <TextBlock Grid.Row="3" Text="Выход в главное меню" MouseUp="ExitMainMenuClick" Style="{StaticResource ResourceKey=MenuTextBlock}"/>
                     </Grid>
                 </TabItem.Content>
             </TabItem>
@@ -138,6 +142,12 @@
                         </StackPanel>
                         <TextBlock Grid.Row="1" Text="Помощь по игре (нажми)" Mouse.MouseUp="HelpClick"
                    FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
+                        <StackPanel Grid.Row="2">
+                            <TextBlock  Text="Текущее внутриигровое время:"
+                             FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
+                            <TextBlock x:Name="LocalTimeTextBlock"
+                             FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
+                        </StackPanel>
                         <!--<TextBlock Grid.Row="2" x:Name="DebugTextBlock"/>-->
 
                         <ListBox x:Name="ListRoom" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Column="6" Grid.RowSpan="4" Mouse.MouseUp="BorderAnimation"

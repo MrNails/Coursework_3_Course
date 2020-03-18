@@ -15,6 +15,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 using HotelManagerSimulator.Logic;
 
 
@@ -40,7 +41,7 @@ namespace HotelManagerSimulator
 
         private bool isRefused;
         public static RoutedCommand MyCommand = new RoutedCommand();
-
+        private GameType gameType;
 
         public MainWindow()
         {
@@ -63,7 +64,7 @@ namespace HotelManagerSimulator
 
                 this.DataContext = Game.Manager;
 
-                FillGrid(GameType.NewGame);
+                FillGrid();
 
                 ListRoom.ItemsSource = Game.Manager.GetFreeRoom(Game.Floors);
 
@@ -83,6 +84,7 @@ namespace HotelManagerSimulator
             Game.Manager.Score = 0;
             Game.Peoples.Clear();
             Game.Floors.Clear();
+            Game.LocalTime = new LocalTime(DateTime.Now);
 
             CloseAllTip();
 
@@ -108,7 +110,7 @@ namespace HotelManagerSimulator
             {
                 MessageBox.Show("+");
                 Game.Start(SpawnFamily, CheckEndSettle);
-                FillGrid(GameType.NewGame);
+                FillGrid();
             }
         }
 
@@ -195,6 +197,11 @@ namespace HotelManagerSimulator
             WrapPanel panel = null;
 
             //DebugTextBlock.Text = Game.FamilyWaitingTime.ToString();
+            LocalTimeTextBlock.Text = Game.LocalTime.ToString();
+
+            LocalTime localTime = Game.LocalTime;
+            localTime.Second += 1;
+            Game.LocalTime = localTime;
 
             foreach (var child in MainField.Children)
             {
@@ -206,7 +213,7 @@ namespace HotelManagerSimulator
                         {
                             border = (Border)canvChild;
                             room = (Room)((ToolTip)((Button)border.Child).ToolTip).Content;
-                            if (room.Guests != null && border.ToolTip == null && room.EndSettleGuest <= DateTime.Now)
+                            if (room.Guests != null && border.ToolTip == null && room.EndSettleGuest <= Game.LocalTime)
                             {
                                 tool.Content = "Время для поселения вышло";
                                 tool.Placement = System.Windows.Controls.Primitives.PlacementMode.Relative;
@@ -301,21 +308,11 @@ namespace HotelManagerSimulator
 
 
         //Заполнение сетки разными компонентами
-        private void FillGrid(GameType gameType)
+        private void FillGrid()
         {
             try
             {
-                string imagePath;
-
-                switch (gameType)
-                {
-                    case GameType.Load:
-                        imagePath = "";
-                        break;
-                    case GameType.NewGame:
-                        imagePath = System.IO.Path.GetFullPath(@".\Resource\Image\A.T.P._Engineer.png");
-                        break;
-                }
+                string imagePath = System.IO.Path.GetFullPath(@".\Resource\Image\A.T.P._Engineer.png");
 
                 Canvas canvas;
                 Image image;
@@ -383,7 +380,14 @@ namespace HotelManagerSimulator
 
                         if (i != 4)
                         {
-                            image.Source = new ImageBrush(new BitmapImage(new Uri(System.IO.Path.GetFullPath(@".\Resource\Image\EmptyRoom.bmp")))).ImageSource;
+                            if (gameType == GameType.Load && i < Game.Floors.Count && j < Game.Floors[i].Rooms.Count && Game.Floors[Game.Floors.Count - i - 1].Rooms[j].Guests != null)
+                            {
+                                image.Source = new ImageBrush(new BitmapImage(new Uri(System.IO.Path.GetFullPath(@".\Resource\Image\FullRoom.bmp")))).ImageSource;
+                            }
+                            else
+                            {
+                                image.Source = new ImageBrush(new BitmapImage(new Uri(System.IO.Path.GetFullPath(@".\Resource\Image\EmptyRoom.bmp")))).ImageSource;
+                            }
                         }
                         else if (j == 0)
                         {
@@ -934,6 +938,7 @@ namespace HotelManagerSimulator
         private void NewGameClick(object sender, MouseButtonEventArgs e)
         {
             GameTab.IsSelected = true;
+            gameType = GameType.NewGame;
             GameInit();
         }
 
@@ -953,6 +958,32 @@ namespace HotelManagerSimulator
             GameOver();
         }
 
+        private void SaveClick(object sender, MouseButtonEventArgs e)
+        {
+            System.Windows.Forms.SaveFileDialog fileDialog = new System.Windows.Forms.SaveFileDialog();
+            fileDialog.Filter = "Файлы сохранения (*.dat)|*.dat";
+            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Game.Save(fileDialog.FileName);
+            }
+        }
+        private void LoadGameClick(object sender, MouseButtonEventArgs e)
+        {
+            System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
+            fileDialog.Filter = "Файлы сохранения (*.dat)|*.dat";
+            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (Game.Load(fileDialog.FileName) == true)
+                {
+                    gameType = GameType.Load;
+                    GameInit();
+                    GameTab.IsSelected = true;
+                } else
+                {
+                    MessageBox.Show("Файл не загружен. Возможно, он повреждён или не правильного формата", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
         private void PauseCommand(object sender, ExecutedRoutedEventArgs e)
         {
             if (GameTab.IsSelected)

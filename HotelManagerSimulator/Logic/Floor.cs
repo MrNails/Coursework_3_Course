@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace HotelManagerSimulator.Logic
 {
+    [Serializable]
     class Floor 
     {
         public List<Room> Rooms { get; set; }

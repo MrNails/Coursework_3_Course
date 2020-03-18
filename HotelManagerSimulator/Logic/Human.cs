@@ -22,6 +22,7 @@ namespace HotelManagerSimulator.Logic
         }
     }
 
+    [Serializable]
     abstract class Human
     {
 
@@ -51,6 +52,7 @@ namespace HotelManagerSimulator.Logic
 
     }
 
+    [Serializable]
     class Guest : Human
     {
 
@@ -63,6 +65,7 @@ namespace HotelManagerSimulator.Logic
 
     }
 
+    [Serializable]
     class Manager : Human, INotifyPropertyChanged
     {
         public delegate void HumanAction();
@@ -72,6 +75,7 @@ namespace HotelManagerSimulator.Logic
         private int settledPeopleCount;
         private int score;
 
+        [field:NonSerializedAttribute()]
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
