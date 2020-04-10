@@ -6,28 +6,28 @@ namespace HotelManagerSimulator.Logic
     [Serializable]
     struct FamilyRequirements
     {
-        public ERoomType roomType;
-        public float minCost;
-        public float maxCost;
-        public List<string> furniture;
+        public ERoomType RoomType { get; set; }
+        public float MinCost { get; set; }
+        public float MaxCost { get; set; }
+        public List<string> Furniture { get; set; }
 
         public FamilyRequirements(ERoomType roomType, float minCost, float maxCost, List<string> furniture)
         {
-            this.roomType = roomType;
-            this.minCost = minCost;
-            this.maxCost = maxCost;
-            this.furniture = furniture;
+            this.RoomType = roomType;
+            this.MinCost = minCost;
+            this.MaxCost = maxCost;
+            this.Furniture = furniture;
         }
 
         public override string ToString()
         {
             string text = "Требования:\n";
-            text += "     Тип комнаты: " + roomType.ToString();
-            text += "\n     Цена от: " + minCost.ToString() + "\n\tдо " + maxCost.ToString();
-            if (furniture != null && furniture.Count > 0)
+            text += "     Тип комнаты: " + RoomType.ToString();
+            text += "\n     Цена от: " + MinCost.ToString() + "\n\tдо " + MaxCost.ToString();
+            if (Furniture != null && Furniture.Count > 0)
             {
                 text += "\n     Мебель: ";
-                foreach (string item in furniture)
+                foreach (string item in Furniture)
                 {
                     text += item + ", ";
                 }
@@ -41,25 +41,43 @@ namespace HotelManagerSimulator.Logic
     class Family
     {
         
-        public List<Human> Members { get; set; }
+        public List<Guest> Members { get; set; }
         public int MembersCount { get; set; }
         public short RoomNumber { get; set; }
         public DateTime EndSettle { get; set; }
         public FamilyRequirements Requirements { get; }
         public float Money { get; set; }
 
-
         public Family()
-        {}
-
-        public Family(List<Human> members, float money, short roomNumber = 0)
         {
+        
+        }
+
+        public Family(List<Guest> members, float money, LocalTime localTime = default(LocalTime), short roomNumber = 0)
+        {
+            localTime.Second = new Random(DateTime.Now.Millisecond).Next(60, 180);
+
             Members = members;
             RoomNumber = roomNumber;
             MembersCount = members.Count;
-            EndSettle = new DateTime(DateTime.Now.Ticks + new Random(DateTime.Now.Millisecond).Next(300000000, 1500000000));
+            EndSettle = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, localTime.Hour, localTime.Minute, localTime.Second);
             Requirements = GenerateRequirements();
             Money = money;
+        }
+
+        public Guest this[int index]
+        {
+            get 
+            {
+                if (index >= 0 && index < Members.Count)
+                {
+                    return Members[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
         private FamilyRequirements GenerateRequirements()

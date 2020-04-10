@@ -17,10 +17,11 @@ namespace HotelManagerSimulator.Logic
         private int seconds;
 
         public LocalTime(int hour, int minutes, int seconds)
+            : this()
         {
-            this.hour = hour;
-            this.minutes = minutes;
-            this.seconds = seconds;
+            this.Hour = hour;
+            this.Minute = minutes;
+            this.Second = seconds;   
         }
 
         public LocalTime(DateTime time)
@@ -28,6 +29,7 @@ namespace HotelManagerSimulator.Logic
             this.hour = time.Hour;
             this.seconds = time.Second;
             this.minutes = time.Minute;
+
         }
 
         public int Hour
@@ -35,12 +37,19 @@ namespace HotelManagerSimulator.Logic
             get { return hour; }
             set
             {
-                if (value < 0 || value >= 24)
+                if (value < 0)
                 {
                     hour = 0;
                 }
                 else if (value < 24)
                 {
+                    hour = value;
+                } else
+                {
+                    while (value >= 24)
+                    {
+                        value -= 24;
+                    }
                     hour = value;
                 }
             }
@@ -58,10 +67,14 @@ namespace HotelManagerSimulator.Logic
                 else if (value < 60)
                 {
                     minutes = value;
-                } else if(value >= 60)
+                } else 
                 {
-                    minutes = 0;
-                    Hour += 1;
+                    while (value >= 60)
+                    {
+                        value -= 60;
+                        Hour += 1;
+                    }
+                    minutes = value;
                 }
             }
         }
@@ -78,10 +91,14 @@ namespace HotelManagerSimulator.Logic
                 else if (value < 60)
                 {
                     seconds = value;
-                } else if(value >= 60)
+                } else
                 {
-                    seconds = 0;
-                    Minute += 1;
+                    while (value >= 60)
+                    {
+                        value -= 60;
+                        Minute += 1;
+                    }
+                    seconds = value;
                 }
             }
         }
@@ -208,12 +225,14 @@ namespace HotelManagerSimulator.Logic
             return rightTime.Hour <= leftTime.Hour && rightTime.Minute <= leftTime.Minute && rightTime.Second <= leftTime.Second;
         }
 
-
+        public static explicit operator DateTime(LocalTime localTime)
+        {
+            return new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, localTime.Hour, localTime.Minute, localTime.Second);
+        }
     }
 
     static class Game
     {
-
         private static bool isLoaded;
 
         private static DispatcherTimer timer { get; set; }
@@ -361,7 +380,7 @@ namespace HotelManagerSimulator.Logic
         {
             Random random = new Random(DateTime.Now.Millisecond);
             int amount = random.Next(1, 5);
-            List<Human> guests = new List<Human>();
+            List<Guest> guests = new List<Guest>();
             List<string> names = new List<string> { "Nick", "Julia", "Piter", "Mark", "Smith" };
             for (int i = 0; i < amount; i++)
             {
@@ -375,7 +394,7 @@ namespace HotelManagerSimulator.Logic
                 }
             }
 
-            Family family = new Family(guests, random.Next(70, 600));
+            Family family = new Family(guests, random.Next(70, 600), LocalTime);
             Peoples.Add(family);
 
             return family;

@@ -165,8 +165,8 @@ namespace HotelManagerSimulator
                                 ((ToolTip)((Button)item).ToolTip).IsOpen = true;
                             }
                         }
-                        button.PreviewMouseDown += MoveFamily;
                         button.PreviewMouseDown += RefuseAction;
+                        button.PreviewMouseDown += MoveFamily;
 
                         mainCanv.PreviewMouseDown += RefuseAction;
                         mainCanv.MouseRightButtonUp += AnswerButtonClick;
@@ -654,6 +654,7 @@ namespace HotelManagerSimulator
             for (int i = 0; i < 2; i++)
             {
                 button = new Button();
+                button.AllowDrop = false;
                 if (i == 0)
                 {
                     button.Content = "Да";
@@ -840,8 +841,8 @@ namespace HotelManagerSimulator
                     return;
                 }
 
-                condition.maxValue = max;
-                condition.minValue = min;
+                condition.MaxValue = max;
+                condition.MinValue = min;
 
             }
             else if (PriceCheckBox.IsChecked == null)
@@ -864,22 +865,22 @@ namespace HotelManagerSimulator
                 switch (type)
                 {
                     case "Economy":
-                        condition.roomType = type;
+                        condition.RoomType = type;
                         break;
                     case "Standart":
-                        condition.roomType = type;
+                        condition.RoomType = type;
                         break;
                     case "Superior":
-                        condition.roomType = type;
+                        condition.RoomType = type;
                         break;
                     case "Deluxe":
-                        condition.roomType = type;
+                        condition.RoomType = type;
                         break;
                     case "Junior Suite":
-                        condition.roomType = "JuniorSuite";
+                        condition.RoomType = "JuniorSuite";
                         break;
                     case "Luxe":
-                        condition.roomType = type;
+                        condition.RoomType = type;
                         break;
                     default:
                         TypeCheckBox.IsChecked = false;

@@ -10,15 +10,15 @@ namespace HotelManagerSimulator.Logic
 {
     struct Condition
     {
-        public int? minValue;
-        public int? maxValue;
-        public string roomType;
+        public int? MinValue { get; set; }
+        public int? MaxValue { get; set; }
+        public string RoomType { get; set; }
 
         public Condition(int? minValue, int? maxValue, string roomType)
         {
-            this.minValue = minValue;
-            this.maxValue = maxValue;
-            this.roomType = roomType;
+            this.MinValue = minValue;
+            this.MaxValue = maxValue;
+            this.RoomType = roomType;
         }
     }
 
@@ -75,7 +75,7 @@ namespace HotelManagerSimulator.Logic
         private int settledPeopleCount;
         private int score;
 
-        [field:NonSerializedAttribute()]
+        [field:NonSerialized()]
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
@@ -169,9 +169,9 @@ namespace HotelManagerSimulator.Logic
                     where floor.Rooms.Count > 0
                     from room in floor.Rooms
                     where room.IsFree == true 
-                    && !(condition.minValue.HasValue && room.Cost < condition.minValue.Value) 
-                    && !(condition.maxValue.HasValue && room.Cost > condition.maxValue.Value)
-                    && !(condition.roomType != null && room.RoomType.ToString() != condition.roomType)
+                    && !(condition.MinValue.HasValue && room.Cost < condition.MinValue.Value) 
+                    && !(condition.MaxValue.HasValue && room.Cost > condition.MaxValue.Value)
+                    && !(condition.RoomType != null && room.RoomType.ToString() != condition.RoomType)
                     select room).ToList<Room>();
         }
 
@@ -179,7 +179,7 @@ namespace HotelManagerSimulator.Logic
         {
             int score = 0;
 
-            if(requirements.roomType == room.RoomType)
+            if(requirements.RoomType == room.RoomType)
             {
                 switch (room.RoomType)
                 {
@@ -202,14 +202,14 @@ namespace HotelManagerSimulator.Logic
                         score += 6;
                         break;
                 }
-            } else if(requirements.roomType > room.RoomType)
+            } else if(requirements.RoomType > room.RoomType)
             {
-                score += (-1) *(requirements.roomType - room.RoomType);
+                score += (-1) *(requirements.RoomType - room.RoomType);
             } else
             {
-                if((requirements.maxCost + requirements.minCost) / 2 - room.Cost > 100)
+                if((requirements.MaxCost + requirements.MinCost) / 2 - room.Cost > 100)
                 {
-                    score -= (int)(((requirements.maxCost + requirements.minCost) / 2 - room.Cost) / 100);
+                    score -= (int)(((requirements.MaxCost + requirements.MinCost) / 2 - room.Cost) / 100);
                 }
             }
 

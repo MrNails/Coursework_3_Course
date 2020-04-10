@@ -38,6 +38,7 @@ namespace HotelManagerSimulator.Logic
             EndSettleGuest = endSettle;
             Furniture = furniture;
         }
+
         public List<string> Furniture { get; set; }
         public short Number { get; set; }
         public int MaxPeopleCount { get; set; }
@@ -73,7 +74,7 @@ namespace HotelManagerSimulator.Logic
             }
         }
 
-        [field: NonSerializedAttribute()]
+        [field: NonSerialized()]
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
