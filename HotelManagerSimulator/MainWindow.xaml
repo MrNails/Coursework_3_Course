@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelManagerSimulator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="740" Width="1850" ResizeMode="NoResize">
+        Title="MainWindow" Height="740" Width="1850" ResizeMode="CanMinimize">
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static local:MainWindow.MyCommand}" Executed="PauseCommand"/>
     </Window.CommandBindings>
@@ -139,8 +139,28 @@
                                 <TextBlock x:Name="ScoreBlock" Text="{Binding Path=Score}" Height="18"/>
                             </WrapPanel>
                         </StackPanel>
-                        <TextBlock Grid.Row="1" Text="Помощь по игре (нажми)" Mouse.MouseUp="HelpClick"
-                   FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
+                        <TextBlock Grid.Row="1" Text="Помощь по игре (нажми)" Mouse.MouseUp="HelpClick">
+                            <TextBlock.Style>
+                                <Style>
+                                    <Style.Setters>
+                                        <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
+                                        <Setter Property="TextBlock.HorizontalAlignment" Value="Center"/>
+                                        <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                                        <Setter Property="TextBlock.FontSize" Value="20"/>
+                                        <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                                        <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                    </Style.Setters>
+                                    <Style.Triggers>
+                                        <Trigger Property="TextBlock.IsMouseOver" Value="True">
+                                            <Setter Property="TextBlock.FontWeight" Value="Black"/>
+                                            <Setter Property="TextBlock.FontStretch" Value="UltraExpanded"/>
+                                            <Setter Property="TextBlock.TextDecorations" Value="Underline"/>
+                                            <Setter Property="TextBlock.FontSize" Value="23"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <StackPanel Grid.Row="2">
                             <TextBlock  Text="Текущее внутриигровое время:"
                              FontSize="20" FontWeight="Bold" TextAlignment="Center"/>

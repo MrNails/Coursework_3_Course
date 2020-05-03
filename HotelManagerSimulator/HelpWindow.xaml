@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelManagerSimulator"
         mc:Ignorable="d"
-        Title="HelpWindow" Height="313.296" Width="450.923">
+        Title="HelpWindow" Height="315" Width="450" ResizeMode="NoResize">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="15"/>
@@ -13,7 +13,7 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.6*"/>
+            <RowDefinition Height="0.7*"/>
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />

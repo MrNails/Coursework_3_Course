@@ -1,20 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 using HotelManagerSimulator.Logic;
 
@@ -56,7 +47,7 @@ namespace HotelManagerSimulator
         {
             try
             {
-
+                
                 Game.Start(SpawnFamily, CheckEndSettle);
 
                 Game.Manager.PaymentError += () => MessageBox.Show("Не хватает денег на поселение");
@@ -108,12 +99,11 @@ namespace HotelManagerSimulator
             }
             else
             {
-                MessageBox.Show("+");
+                //MessageBox.Show("+");
                 Game.Start(SpawnFamily, CheckEndSettle);
                 FillGrid();
             }
         }
-
 
         //Создаёт картинку и семью
         private void SpawnFamily(object sender, EventArgs e)
@@ -280,15 +270,22 @@ namespace HotelManagerSimulator
         //Механизм Drag&Drop
         private void MoveFamily(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Button && ((Button)sender).ToolTip is ToolTip)
+            try
             {
-                DragDrop.DoDragDrop((Button)sender, ((ToolTip)((Button)sender).ToolTip).Content, DragDropEffects.Move);
+                if (sender is Button && ((Button)sender).ToolTip is ToolTip)
+                {
+                    DragDrop.DoDragDrop((Button)sender, ((ToolTip)((Button)sender).ToolTip).Content, DragDropEffects.Move);
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\n\n{ex.StackTrace}");
             }
         }
 
         //Механизм Drag&Drop
         private void FamilyDrop(object sender, DragEventArgs e)
         {
+            try {
             Room room = null;
             Family family = null;
             if (sender is Button && ((Button)sender).ToolTip is ToolTip && Game.FamilyWaitingTime != byte.MaxValue)
@@ -303,9 +300,11 @@ namespace HotelManagerSimulator
                     DeletePeople();
                 }
             }
+            } catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\n\n{ex.StackTrace}");
+            }
         }
-
-
 
         //Заполнение сетки разными компонентами
         private void FillGrid()
@@ -452,7 +451,6 @@ namespace HotelManagerSimulator
             }
         }
 
-
         private void ChangePicture(int roomNumber)
         {
             foreach (var child in MainField.Children)
@@ -477,7 +475,6 @@ namespace HotelManagerSimulator
                 }
             }
         }
-
 
         private void DeletePeople()
         {
@@ -639,7 +636,6 @@ namespace HotelManagerSimulator
             }
         }
 
-
         private WrapPanel CreatePanelWithButton(string text, MouseButtonEventHandler handler, int tag = -1, ToolTip tool = null)
         {
             WrapPanel panel = new WrapPanel();
@@ -690,7 +686,6 @@ namespace HotelManagerSimulator
         {
             try
             {
-
                 if (sender is Button)
                 {
                     Button button = (Button)sender;
@@ -772,10 +767,9 @@ namespace HotelManagerSimulator
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show($"{ex.Message}\n\n{ex.StackTrace}");
             }
         }
-
 
         private void HelpClick(object sender, MouseButtonEventArgs e)
         {
@@ -811,7 +805,6 @@ namespace HotelManagerSimulator
 
             canvas.BeginAnimation(Canvas.MarginProperty, moveAnimation);
         }
-
         private void SetFilterConditionClick(object sender, RoutedEventArgs e)
         {
             if (sender == null)
@@ -894,7 +887,6 @@ namespace HotelManagerSimulator
 
             ListRoom.ItemsSource = Game.Manager?.GetFreeRoom(Game.Floors, condition);
         }
-
         private void CloseAllTip()
         {
             for (int i = 0; i < MainField.Children.Count; i++)
@@ -924,41 +916,33 @@ namespace HotelManagerSimulator
                 }
             }
         }
-
         private void SelectItem(object sender, RoutedEventArgs e)
         {
             SetFilterConditionClick(sender, e);
         }
-
         private void TextChanged(object sender, TextChangedEventArgs e)
         {
             SetFilterConditionClick(sender, new RoutedEventArgs());
         }
-
-
         private void NewGameClick(object sender, MouseButtonEventArgs e)
         {
             GameTab.IsSelected = true;
             gameType = GameType.NewGame;
             GameInit();
         }
-
         private void ExitClick(object sender, MouseButtonEventArgs e)
         {
             this.Close();
         }
-
         private void ResumeClick(object sender, MouseButtonEventArgs e)
         {
             Game.ResumeGame();
             GameTab.IsSelected = true;
         }
-
         private void ExitMainMenuClick(object sender, MouseButtonEventArgs e)
         {
             GameOver();
         }
-
         private void SaveClick(object sender, MouseButtonEventArgs e)
         {
             System.Windows.Forms.SaveFileDialog fileDialog = new System.Windows.Forms.SaveFileDialog();

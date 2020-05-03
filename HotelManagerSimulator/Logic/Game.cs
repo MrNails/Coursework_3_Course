@@ -16,12 +16,12 @@ namespace HotelManagerSimulator.Logic
         private int minutes;
         private int seconds;
 
-        public LocalTime(int hour, int minutes, int seconds)
+        public LocalTime(int hour, int minute, int second)
             : this()
         {
             this.Hour = hour;
-            this.Minute = minutes;
-            this.Second = seconds;   
+            this.Minute = minute;
+            this.Second = second;   
         }
 
         public LocalTime(DateTime time)
